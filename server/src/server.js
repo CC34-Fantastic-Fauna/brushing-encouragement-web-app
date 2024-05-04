@@ -1,4 +1,4 @@
-const { setupServer } = require("./endpoints/endpoints");
+const { setupServer } = require("./endpoints");
 
 const server = setupServer();
 const PORT = parseInt(process.env.PORT) || 8080;

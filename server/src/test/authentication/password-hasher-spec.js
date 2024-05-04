@@ -1,6 +1,6 @@
 const {expect} = require('chai');
 const crypto = require ('crypto');
-const { generateSalt, generateHashedPassword } = require('../../authentication/password-hasher.js');
+const { generateSalt, generateHashedPassword } = require('../../utils/authentication/password-hasher');
 
 
 describe('Generating a hashed password', () => {

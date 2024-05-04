@@ -1,5 +1,5 @@
 const { USER_CREDENTIALS_TABLE, SCORES_TABLE } = require("../../src/global/global");
-const { generateHashedPassword, generateSalt } = require('../../src/authentication/password-hasher')
+const { generateHashedPassword, generateSalt } = require('../../src//utils/authentication/password-hasher')
 const crypto = require('crypto');
 /**
  * @param { import("knex").Knex } knex
