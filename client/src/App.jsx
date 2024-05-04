@@ -29,7 +29,7 @@ function App() {
   // Handle functions
 
   async function handleLogin() {
-    const response = await fetch(`${BASE_URL}/login`, {
+    const response = await fetch(`${BASE_URL}/`, {
       method: "POST"
     });
     const data = await response.text();
@@ -47,7 +47,9 @@ function App() {
   }
 
   function handleModal(){
-    return !isloggedin ? <Modal toggle = {() => setIsLoggedIn(true)}/>: <> </>
+    if (process.env.NODE_ENV === "production" || import.meta.env.VITE_TEST_AUTHENTICATION === "true")
+      return !isloggedin ? <Modal toggle = {() => setIsLoggedIn(true)}/>: <> </>
+      else return <></>;
   }
   
   
