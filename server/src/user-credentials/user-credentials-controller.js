@@ -1,50 +1,49 @@
 const userCredentialModel = require('./user-credentials-model');
+const { generateSalt, generateHashedPassword } = require('./../utils/authentication/password-hasher');
 
 async function createUserCredential (req, res) {
-  // console.log(req.sessionID);
-  const { userEmail, password } = req.body;
-  if (req.session.authenticated) {
-    res.json(req.session);
-  } else { //User has not been previously authenticated
-    if (password == "brushingisfun") { //check the user's password
-      req.session.authenticated = true;
-      req.session.user = {
-        userEmail, password
-      }
-      res.json(req.session);
-    } else { // Bad password
-      res.status(403).send({message: "Bad credentials"});
-    }
+  const { user_email, password } = req.body;
+  const salt = generateSalt();
+  const hashedPassword = generateHashedPassword(password, salt);
+  const userCredentialObj = {
+    user_email: user_email,
+    hashed_password: hashedPassword,
+    salt: salt,
   }
-  
-  // res.status(200).send({message: "Successfully logged in."});  
+  try {
+    const result = await userCredentialModel.create(userCredentialObj);
+    res.status(201).json({message: "New user created."});
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 async function getUserCredential (req, res) {
-  const { userEmail } = req.body;
-  console.log(userEmail);
-  const result = await userCredentialModel.getByEmail(userEmail);
+  const { user_email } = req.body;
+  const result = await userCredentialModel.getByEmail(user_email);
   return result;
 }
 
 async function handleUserCredential(req, res) {
-  const user = await getUserCredential(req, res);
-  if (!user) return res.status(400).send({message: "User not found. Let's make an account."});
-
-  const { userEmail, password } = req.body;
   if (req.session.authenticated) {
-    res.json(req.session);
-  } else { //User has not been previously authenticated
-    if (password == "brushingisfun") { //check the user's password
-      req.session.authenticated = true;
-      req.session.user = {
-        userEmail, password
-      }
-      res.json(req.session);
-    } else { // Bad password
-      res.status(403).send({message: "Bad credentials"});
-    }
+    return res.json(req.session);
   }
+  
+  const { user_email, password } = req.body;
+  const user = await getUserCredential(req, res);
+  if (!user) return await createUserCredential(req, res);
+  
+  const { hashed_password, salt } = user;
+  //User has not been previously authenticated
+  if (generateHashedPassword(password, salt) === hashed_password) { //check the user's password
+     req.session.authenticated = true;
+     req.session.user = { //additional things to add to send back
+      user_email, password
+     }
+     res.json(req.session);
+   } else { // Bad password
+     res.status(403).send({message: "Bad credentials"});
+   }
 }
 
 module.exports = {

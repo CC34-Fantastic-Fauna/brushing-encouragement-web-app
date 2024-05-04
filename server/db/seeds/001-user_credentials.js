@@ -20,4 +20,5 @@ exports.seed = async function(knex) {
   await knex(USER_CREDENTIALS_TABLE).insert([
     brendaCredentialsEntry,
   ]);
+  await knex.raw(`select setval(\'${USER_CREDENTIALS_TABLE}_id_seq\', max(id)) from ${USER_CREDENTIALS_TABLE}`);
 };

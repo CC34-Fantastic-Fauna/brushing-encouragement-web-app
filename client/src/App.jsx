@@ -29,11 +29,7 @@ function App() {
   // Handle functions
 
   async function handleLogin() {
-    const response = await fetch(`${BASE_URL}/`, {
-      method: "POST"
-    });
-    const data = await response.text();
-    console.log(data);
+    console.error("Not yet implemented");
   }
 
   function getStreakScore() {

@@ -5,8 +5,8 @@ const userCredentialController = require('./../user-credentials/user-credentials
 const router = Router();
 
 function isValidEmail (req, res, next) {
-  const body = req.body;
-  if (!validateEmail(body.userEmail)) return res.status(400).send({message: "Not valid email"});
+  const {user_email} = req.body;
+  if (!validateEmail(user_email)) return res.status(400).send({message: "Not valid email"});
   
   next();
 }

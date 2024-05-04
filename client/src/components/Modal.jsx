@@ -1,5 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 const Modal = (props) => {
 
     const { toggle } = props;
@@ -12,10 +14,20 @@ const Modal = (props) => {
 
     const dialogRef = useRef(null)
 
-    function handleLogin(e) {
+    async function handleLogin(e) {
         e.preventDefault();
-        console.table(userEmail, password);
-        toggle();
+        const userCredentials = {
+            user_email: userEmail,
+            password: password
+        }
+        const response = await fetch(`${BASE_URL}/login`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(userCredentials),
+        });
+        const data = await response.json();
+        console.log(data);
+        // toggle();
     }
 
     return (
