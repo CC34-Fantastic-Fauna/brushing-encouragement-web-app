@@ -5,6 +5,8 @@ import Star from "./components/Star";
 import Timer from "./components/Timer";
 import Modal from "./components/Modal";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 function App() {
   // Use States
   const [streakScore, setStreakScore] = useState(0);
@@ -17,6 +19,7 @@ function App() {
     setStreakScore(getStreakScore());
     getStarScore();
     setIsLoggedIn();
+    handleLogin();
   }, []);
 
   useEffect  (() => {
@@ -24,6 +27,15 @@ function App() {
   },[isloggedin])
   
   // Handle functions
+
+  async function handleLogin() {
+    const response = await fetch(`${BASE_URL}/login`, {
+      method: "POST"
+    });
+    const data = await response.text();
+    console.log(data);
+  }
+
   function getStreakScore() {
     let score = 30;
     return score;
@@ -35,7 +47,7 @@ function App() {
   }
 
   function handleModal(){
-    return !isloggedin ? <Modal onClick = {() => setIsLoggedIn(true)}/>: <> </>
+    return !isloggedin ? <Modal toggle = {() => setIsLoggedIn(true)}/>: <> </>
   }
   
   
