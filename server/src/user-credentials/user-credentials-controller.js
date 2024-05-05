@@ -12,7 +12,12 @@ async function createUserCredential (req, res) {
   }
   try {
     const result = await userCredentialModel.create(userCredentialObj);
-    res.status(201).json({message: "New user created."});
+    req.session.authenticated = true;
+     const { id } = result;
+     req.session.user = { //additional things to add to send back
+      id,
+     }
+    res.status(201).json(req.session);
   } catch (err) {
     console.log(err);
   }
@@ -25,10 +30,8 @@ async function getUserCredential (req, res) {
 }
 
 async function handleUserCredential(req, res) {
-  // console.log(req.session.id);
   if (req.session.authenticated) {
-    console.log('user previously authenticated');
-    return res.json(req.session);
+    return res.json({message: "Previously Authenticated"});
   }
   
   const { user_email, password } = req.body;
@@ -39,10 +42,11 @@ async function handleUserCredential(req, res) {
   //User has not been previously authenticated
   if (generateHashedPassword(password, salt) === hashed_password) { //check the user's password
      req.session.authenticated = true;
+     const { id } = user;
      req.session.user = { //additional things to add to send back
-      user_email, password
+      id,
      }
-     console.log("new session id", req.session.id);
+     console.log("new session id");
      res.json(req.session);
    } else { // Bad password
      res.status(403).send({message: "Bad credentials"});

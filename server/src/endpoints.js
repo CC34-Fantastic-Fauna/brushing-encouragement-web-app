@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-const session = require ('express-session');
+const knex = require("./knex");
+// const session = require ('express-session');
+const cookieSession = require ('cookie-session');
 
 const loginRoutes = require("./routes/login");
 
@@ -13,19 +15,12 @@ app.use(cors({
   credentials: true,
 }
 ));
-app.use(session({
+app.use(cookieSession({
   secret: 'brush secret',
-  cookie: {
-    maxAge: 30000,
-    sameSite: 'lax',
-    httpOnly: false,
-  },
-  saveUninitialized: false,
+  maxAge: 30000,
+  sameSite: 'lax',
+  httpOnly: false,
 }));
-
-
-
-
 
 const setupServer = () => {
   app.get("/", (req, res) => {
