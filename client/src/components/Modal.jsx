@@ -22,6 +22,7 @@ const Modal = (props) => {
         }
         const response = await fetch(`${BASE_URL}/login`, {
             method: "POST",
+            credentials: 'include',
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(userCredentials),
         });

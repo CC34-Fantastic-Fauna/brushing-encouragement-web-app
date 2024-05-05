@@ -25,7 +25,9 @@ async function getUserCredential (req, res) {
 }
 
 async function handleUserCredential(req, res) {
+  // console.log(req.session.id);
   if (req.session.authenticated) {
+    console.log('user previously authenticated');
     return res.json(req.session);
   }
   
@@ -40,6 +42,7 @@ async function handleUserCredential(req, res) {
      req.session.user = { //additional things to add to send back
       user_email, password
      }
+     console.log("new session id", req.session.id);
      res.json(req.session);
    } else { // Bad password
      res.status(403).send({message: "Bad credentials"});

@@ -17,4 +17,14 @@ router.get('/', (req,res) => {
 
 router.post("/", isValidEmail, userCredentialController.handleUserCredential);
 
+function isAuthenticated (req, res, next) {
+  if (!req.session.authenticated) return res.status(403).send({message: "Not authenticated"});
+
+  next();
+}
+
+router.get("/test", isValidEmail, isAuthenticated, (req, res) => {
+  res.status(200).send({message: "Authenticated"})
+});
+
 module.exports = router;
